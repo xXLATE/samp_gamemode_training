@@ -1,0 +1,30 @@
+[18:12:15] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:12:15] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:12:15] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:12:15] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:16:27] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:16:27] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:16:27] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:16:27] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:43:46] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:43:46] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:43:46] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[18:43:46] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[19:00:52] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
+[19:00:54] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
+[19:00:57] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
+[19:00:59] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2002 'Can't connect to MySQL server on '127.0.0.1' (10061)'
+[19:37:25] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[19:37:25] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[19:37:25] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[19:37:25] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #2019 'Can't initialize character set unknown (path: compiled_in)'
+[15:54:44] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #1049 'Unknown database 'test''
+[15:54:44] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #1049 'Unknown database 'test''
+[15:54:44] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #1049 'Unknown database 'test''
+[15:54:44] [ERROR] CConnection::CConnection - establishing connection to MySQL database failed: #1049 'Unknown database 'test''
+[19:32:39] [ERROR] mysql_tquery: callback error: parameter count does not match format specifier length
+[19:35:05] [ERROR] mysql_tquery: callback error: parameter count does not match format specifier length
+[19:36:24] [ERROR] mysql_tquery: callback error: parameter count does not match format specifier length
+[19:38:46] [ERROR] mysql_tquery: callback error: parameter count does not match format specifier length (C:\Users\XLATE\Downloads\test_samp_mode\gamemodes\new.pwn:330 -> C:\Users\XLATE\Downloads\test_samp_mode\gamemodes\new.pwn:86)
+[19:40:25] [ERROR] mysql_tquery: callback error: parameter count does not match format specifier length (C:\Users\XLATE\Downloads\test_samp_mode\gamemodes\new.pwn:330 -> C:\Users\XLATE\Downloads\test_samp_mode\gamemodes\new.pwn:86)
+[19:41:45] [ERROR] mysql_tquery: callback error: parameter count does not match format specifier length
