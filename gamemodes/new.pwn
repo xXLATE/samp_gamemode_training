@@ -14,8 +14,8 @@
 
 #define MYSQL_HOST      "localhost"		// Адрес, по которому расположен MySQL-Сервер
 #define MYSQL_USER      "root"			// Имя пользователя, на которого была создана база данных
-#define MYSQL_DATABASE  "training_samp"	// Имя базы данных
 #define MYSQL_PASSWORD  "root"			// Пароль для доступа к серверу MySQL
+#define MYSQL_DATABASE  "training_samp"	// Имя базы данных
 
 /*-------------------------------=[ Переменные ]=-----------------------------*/
 
@@ -39,7 +39,7 @@ enum e_pInfo
 {
 	id,
 	name[MAX_PLAYER_NAME],
-	password_hash[50]
+	password_hash[33]
 };
 new pInfo[MAX_PLAYERS][e_pInfo];
 
@@ -75,7 +75,10 @@ public OnPlayerRequestClass(playerid, classid)
 
 public OnPlayerConnect(playerid)
 {
-	TogglePlayerSpectating(playerid, true);	
+	TogglePlayerSpectating(playerid, true);
+	InterpolateCameraPos(playerid, 540.984313, -1390.273559, 52.618972, 510.561401, -1621.964233, 57.970062, 50000, CAMERA_MOVE);
+	InterpolateCameraLookAt(playerid, 538.319641, -1394.261474, 51.206100, 509.820800, -1617.612304, 55.622138, 50000, CAMERA_MOVE);
+
     GetPlayerName(playerid, pInfo[playerid][name], MAX_PLAYER_NAME);
 	CheckPlayerExists(playerid);
     return 1;
@@ -330,22 +333,12 @@ public OnCheckPlayerExistsFromDB(playerid)
 {
 	if (cache_num_rows() > 0)
 	{
-		ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "Введите пароль для входа:", "Войти", "Отмена");
+		ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "Введите пароль для входа:", "Войти", "Отмена");
 		cache_get_value_name_int(0, "id", pInfo[playerid][id]);
 		cache_get_value_name(0, "password_hash", pInfo[playerid][password_hash]);
 	}
     else
         ShowPlayerDialog(playerid, D_REGISTER, DIALOG_STYLE_INPUT, "Регистрация", "Введите пароль для регистрации:", "Регистрация", "Отмена");
-
-	SetTimerEx("SetCameraToAuthPos", 1000, false, "%i", playerid);
-}
-
-forward SetCameraToAuthPos(playerid);
-public SetCameraToAuthPos(playerid)
-{
-	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
-	SetPlayerCameraPos(playerid, 1958.3783, 1343.1572, 15.3746);
-	SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
 }
 
 stock RegisterPlayer(playerid, password[])
@@ -368,14 +361,14 @@ stock RegisterPlayer(playerid, password[])
 	}
 
 	pInfo[playerid][password_hash][0] = EOS;
-	strins(pInfo[playerid][password_hash], password, 0);
+	strins(pInfo[playerid][password_hash], MD5_Hash(password), 0);
 
-    new query_string[66+MAX_PLAYER_NAME-4+30+1];
-    mysql_format(mySql, query_string, sizeof(query_string), "INSERT INTO `players` (`name`, `password_hash`) VALUES ('%s', '%s')", pInfo[playerid][name], pInfo[playerid][password_hash]);
-    mysql_tquery(mySql, query_string, "UploadPlayerAccountNumber", "i", playerid);
+    new query[60 + MAX_PLAYER_NAME + 32];
+    mysql_format(mySql, query, sizeof(query), "INSERT INTO `players` (`name`, `password_hash`) VALUES ('%s', '%s')", pInfo[playerid][name], pInfo[playerid][password_hash]);
+    mysql_tquery(mySql, query, "UploadPlayerAccountNumber", "i", playerid);
 
-    format(query_string, sizeof(query_string), "Аккаунт %s успешно зарегистрирован. Желаем Вам приятной игры!", pInfo[playerid][name]);
-    SendClientMessage(playerid, 0xFFFFFF00, query_string);
+    format(query, sizeof(query), "Аккаунт %s успешно зарегистрирован. Желаем Вам приятной игры!", pInfo[playerid][name]);
+    SendClientMessage(playerid, 0xFFFFFF00, query);
     Spawn(playerid);
     return 1;
 }
@@ -386,7 +379,7 @@ public UploadPlayerAccountNumber(playerid) pInfo[playerid][id] = cache_insert_id
 stock LoginPlayer(playerid, password[])
 {
 	if(!strlen(password))
-		return ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы не можете продолжить авторизацию не введя пароль!\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
+		return ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы не можете продолжить авторизацию не введя пароль!\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
 	
 	for(new i = strlen(password)-1; i != -1; i--)
 	{
@@ -395,24 +388,24 @@ stock LoginPlayer(playerid, password[])
 			case '0'..'9', 'а'..'я', 'a'..'z', 'А'..'Я', 'A'..'Z':
 				continue;
 			default:
-				return ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Введённый пароль содержит запрещённые символы!\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
+				return ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Введённый пароль содержит запрещённые символы!\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
 		}
 	}
 
-	if(!strcmp(pInfo[playerid][password_hash], password))
-		Spawn(playerid);		
+	if(!strcmp(pInfo[playerid][password_hash], MD5_Hash(password)))
+		Spawn(playerid);
 	else
 	{
 		switch(GetPVarInt(playerid, "WrongPassword"))
 		{
 			case 0:
-				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталось 3 попытки.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
+				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталось 3 попытки.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
 			case 1:
-				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталось 2 попытки.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
+				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталось 2 попытки.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
 			case 2:
-				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталось 1 попытка.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
+				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталось 1 попытка.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
 			case 3:
-				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_INPUT, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталась последняя попытка, после чего Вас кикнет.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
+				ShowPlayerDialog(playerid, D_LOGIN, DIALOG_STYLE_PASSWORD, "Авторизация", "{FF0000}Ошибка: {FFFFFF}Вы ввели неверный пароль! У Вас осталась последняя попытка, после чего Вас кикнет.\nВведите пароль от аккаунта для входа на сервер:", "Вход", "Выход");
 			default:
 			{
 				ShowPlayerDialog(playerid, D_KICK, DIALOG_STYLE_MSGBOX, "Оповещение", "{FFFFFF}Вы были кикнуты с сервера.\n{FF0000}Причина: Превышен лимит попыток на ввод пароля.\n{FFFFFF}Для выхода с сервера введите \"/q\" в чат", "Выход", "");
@@ -431,6 +424,7 @@ public Spawn(playerid)
 	IsPlayerAuth{playerid} = 1;
 	GreetingPlayers(playerid);
 	AddPlayerClass(0, 2070.6699, 1258.7913, 10.6719, 179.2384, 24, 100, 0, 0, 0, 0);
+	SetSpawnInfo(playerid, 0, 0, 2070.6699, 1258.7913, 10.6719, 179.2384, 24, 100, 0, 0, 0, 0);
 	TogglePlayerSpectating(playerid, false);
     return 1;
 }
